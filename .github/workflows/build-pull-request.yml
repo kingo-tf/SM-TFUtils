@@ -1,0 +1,64 @@
+name: Build Pull Request
+on:
+  pull_request:
+  workflow_dispatch:
+env:
+  # The SourceMod build for TF2 Rebalanced: its compiler and includes are used
+  SOURCEMOD_REPO: kingo-tf/sourcemod
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - name: Get SourceMod
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # The newest release that has a Linux package (its releases are prereleases,
+          # and the Linux package is uploaded a while after the release is created)
+          url=$(gh api "repos/$SOURCEMOD_REPO/releases?per_page=20" --jq \
+            '[.[] | select(.draft | not) | .assets[] | select(.name | test("^sourcemod-.*-linux\\.tar\\.gz$"))][0].browser_download_url // empty')
+          if [ -z "$url" ]; then
+            echo "::error::No release of $SOURCEMOD_REPO has a Linux package."
+            exit 1
+          fi
+          echo "Using $url"
+          mkdir sourcemod
+          curl -fsSL "$url" | tar -xz -C sourcemod
+
+      - name: Setup Ninja Build
+        uses: ashutoshvarma/setup-ninja@master
+        with:
+          version: 1.10.0
+
+      - name: Compile
+        run: |
+          # The project's own build: configure.py lists the plugins and the files that go with them
+          python3 configure.py --spcomp-dir sourcemod/addons/sourcemod/scripting
+          ninja
+          # spcomp's exit code is not relied on: the plugin has to be there
+          if [ ! -s build/plugins/tf2utils.smx ]; then
+            echo "::error::scripting/tf2utils.sp did not compile."
+            exit 1
+          fi
+
+      - name: Package
+        run: |
+          # The same layout as a release: the plugin, its gamedata, its source and its include
+          mkdir -p package/addons/sourcemod
+          cp -r build/plugins build/gamedata build/scripting package/addons/sourcemod/
+
+      # The build of the pull request, to download from the run's page
+      - name: Upload Build
+        uses: actions/upload-artifact@v7
+        with:
+          name: tf2utils
+          path: package/
+          if-no-files-found: error

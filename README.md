@@ -8,6 +8,8 @@ This Fork is for [Team Fortress 2: Rebalanced](https://store.steampowered.com/ap
 need any upkeep for gamedata on updates. The game exposes specific functionality that the developers curate.
 This fork also requires this fork of [SourceMod](https://github.com/kingo-tf/sourcemod).
 
+If you require the original you can find it [here](https://github.com/nosoop/SM-TFUtils)
+
 One of the design decisions is to only use dependencies built-in to SourceMod.  That means this
 excludes most hooks (handled by [DHooks][]), and `SDKCall`s that require allocation of some
 structure (which can be done with [Source Scramble][]).

@@ -1,8 +1,12 @@
 # TF2 Utils
 
-SourceMod utility natives for Team Fortress 2: Rebalanced.  Mainly focused around gameplay-related
+~~SourceMod utility natives for Team Fortress 2.  Mainly focused around gameplay-related
 functionality that require gamedata that may break during updates, including calls to game
-functions and raw memory accessors that aren't already in some other library.
+functions and raw memory accessors that aren't already in some other library~~.
+
+This Fork is for [Team Fortress 2: Rebalanced](https://store.steampowered.com/app/4212660/Team_Fortress_2_Rebalanced/) and does not
+need any upkeep for gamedata on updates. The game exposes specific functionality that the developers curate.
+This fork also requires this fork of [SourceMod](https://github.com/kingo-tf/sourcemod).
 
 One of the design decisions is to only use dependencies built-in to SourceMod.  That means this
 excludes most hooks (handled by [DHooks][]), and `SDKCall`s that require allocation of some

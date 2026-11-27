@@ -25,9 +25,9 @@ Go to [the releases page][] and get the following from the topmost release:
 - Copy `tf2.utils.nosoop.txt` to `gamedata/`
 - Copy `tf2utils.inc` to `scripting/include/`
 
-[the releases page]: https://github.com/nosoop/SM-TFUtils/releases
+[the releases page]: https://github.com/kingo-tf/SM-TFUtils/releases
 
-## Similar plugins
+## Similar plugins (not guaranteed to work with TF2R without some work)
 
 There are a number of shared plugins for TF2 that are focused on specific aspects.
 These include:
